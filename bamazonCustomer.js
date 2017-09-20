@@ -30,42 +30,46 @@ function listItems() {
 
 // Prompts user to order items
 function promptUser() {
-	inquirer.prompt([
-	{
-		name: 'id',
-		message: 'What is the id of the product you wish to order?',
-		// Prevent user from entering invalid id
-		validate: function(input) {
-			if (input < 1 || input > res.length || isNaN(input) == true) {
-				console.log('\nEnter a valid id');
-			} else {return true;}
-		}
-	},
-	{
-		name: 'quantity',
-		message: 'How many units would you like to order?',
-		// Prevent user from entering invalid id
-		validate: function(input) {
-			if (isNaN(input) == true) {
-				console.log('\nEnter a number');
-			} else {return true;}
-		}
-	}
-	]).then(function(answers) {
-		connection.query('SELECT * from products WHERE ?', [{id: answers.id}], function(err,res) {
-			var tmpStock = res[0].stock_quantity;
-			if (err) throw err;
-			if (answers.quantity > res[0].stock_quantity) {
-				console.log('Insufficient quantity!');
-				promptUser();
-			} else {
-				// Updates database with new stock value
-				connection.query('UPDATE products SET ? WHERE ?', [{stock_quantity: tmpStock - answers.quantity},{id: answers.id}], function(err) {
-					if (err) throw err;
-					console.log("Order has been placed!\n" + '----------------------');
-					listItems();
-				});
+	connection.query('SELECT * FROM products', function(err,res) {
+		if (err) throw err;
+		inquirer.prompt([
+		{
+			name: 'id',
+			message: 'What is the id of the product you wish to order?',
+			// Prevent user from entering invalid id
+			validate: function(input) {
+				if (input < 1 || input > res.length || isNaN(input) == true) {
+					console.log('\nEnter a valid id');
+				} else {return true;}
 			}
+		},
+		{
+			name: 'quantity',
+			message: 'How many units would you like to order?',
+			// Prevent user from entering invalid id
+			validate: function(input) {
+				if (isNaN(input) == true) {
+					console.log('\nEnter a number');
+				} else {return true;}
+			}
+		}
+		]).then(function(answers) {
+			connection.query('SELECT * from products WHERE ?', [{id: answers.id}], function(err,res) {
+				var tmpStock = res[0].stock_quantity;
+				if (err) throw err;
+				if (answers.quantity > res[0].stock_quantity) {
+					console.log('Insufficient quantity!');
+					promptUser();
+				} else {
+					// Updates database with new stock value
+					connection.query('UPDATE products SET ? WHERE ?', [{stock_quantity: tmpStock - answers.quantity},{id: answers.id}], function(err) {
+						if (err) throw err;
+						console.log("Order has been placed!\n" + '----------------------');
+						listItems();
+					});
+				}
+			});
 		});
 	});
+	
 }
