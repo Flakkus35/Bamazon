@@ -13,23 +13,27 @@ connection.connect(function(err) {
 	if (err) throw err;
 	console.log('Connected as id ' + connection.threadId + '\n');
 	listItems();
-})
+});
 
+// List out all stock info
 function listItems() {
 	connection.query('SELECT * FROM products', function(err,res) {
 		if (err) throw err;
 		for (var i = 0; i < res.length; i++) {
 			console.log(res[i].id + ' | ' + res[i].product_name + ' | ' + res[i].department_name + ' | ' + res[i].price + ' | ' + res[i].stock_quantity);
 		}
+		// Runs function after diplaying all items
 		promptUser();
 	});
 }
 
+// Prompts user to order items
 function promptUser() {
 	inquirer.prompt([
 	{
 		name: 'id',
 		message: 'What is the id of the product you wish to order?',
+		// 
 		validate: function(input) {
 			if (input > 10 || input < 1 || isNaN(input) == true) {
 				console.log('\nEnter a valid id');
