@@ -16,7 +16,7 @@ Make sure to install the neccessary NPM packages using **npm i** into the bash/t
 
 -The second question asks for a number of units to order.
 
-  *Note: If you order a greater number than you have in stock it will respond with 'Insufficient Quanity' and send you back*
+  *Note: If you order a greater number than you have in stock it will respond with 'Insufficient Quantity' and send you back*
   
 ![GitHub Logo](/screenshots/customer_order.png)
 
@@ -40,8 +40,16 @@ Make sure to install the neccessary NPM packages using **npm i** into the bash/t
 
 3. Choosing 'Add to Inventory' will ask the user for an id and number of units to add to that product.
 
-![GitHub Logo](/screenshots/manager_add_start.png)
+![GitHub Logo](/screenshots/manager_plus_stock.png)
+
+-After entering the amount the database will update to the new stock quantity for the product chosen.
+
+![GitHub Logo](/screenshots/manager_plus_stock_done.png)
 
 4. Choosing 'Add New Product' will ask 4 questions to fill out the data entry for a new product.
 
 ![GitHub Logo](/screenshots/manager_addprod_start.png)
+
+-After entering all required entries the database will update with the new product.
+
+![GitHub Logo](/screenshots/manager_addprod_done.png)
