@@ -22,6 +22,7 @@ function listItems() {
 		for (var i = 0; i < res.length; i++) {
 			console.log(res[i].id + ' | ' + res[i].product_name + ' | ' + res[i].department_name + ' | ' + res[i].price + ' | ' + res[i].stock_quantity);
 		}
+		console.log('----------------------------------------');
 		// Runs function after diplaying all items
 		promptUser();
 	});
