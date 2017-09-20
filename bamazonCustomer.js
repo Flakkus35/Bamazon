@@ -12,15 +12,18 @@ var connection = mysql.createConnection({
 connection.connect(function(err) {
 	if (err) throw err;
 	console.log('Connected as id ' + connection.threadId + '\n');
+	listItems();
 })
 
-connection.query('SELECT * FROM products', function(err,res) {
-	if (err) throw err;
-	for (var i = 0; i < res.length; i++) {
-		console.log(res[i].id + ' | ' + res[i].product_name + ' | ' + res[i].department_name + ' | ' + res[i].price + ' | ' + res[i].stock_quantity);
-	}
-	promptUser();
-});
+function listItems() {
+	connection.query('SELECT * FROM products', function(err,res) {
+		if (err) throw err;
+		for (var i = 0; i < res.length; i++) {
+			console.log(res[i].id + ' | ' + res[i].product_name + ' | ' + res[i].department_name + ' | ' + res[i].price + ' | ' + res[i].stock_quantity);
+		}
+		promptUser();
+	});
+}
 
 function promptUser() {
 	inquirer.prompt([
@@ -44,10 +47,17 @@ function promptUser() {
 	}
 	]).then(function(answers) {
 		connection.query('SELECT * from products WHERE ?', [{id: answers.id}], function(err,res) {
+			var tmpStock = res[0].stock_quantity;
 			if (err) throw err;
 			if (answers.quantity > res[0].stock_quantity) {
 				console.log('Insufficient quantity!');
 				promptUser();
+			} else {
+				connection.query('UPDATE products SET ? WHERE ?', [{stock_quantity: tmpStock - answers.quantity},{id: answers.id}], function(err) {
+					if (err) throw err;
+					console.log("Order has been placed!\n" + '----------------------');
+					listItems();
+				});
 			}
 		});
 	});
