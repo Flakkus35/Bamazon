@@ -15,6 +15,7 @@ connection.connect(function(err) {
 	displayOptions();
 });
 
+// Gives user a list of operations to choose from
 function displayOptions() {
 	inquirer.prompt([
 		{
@@ -41,6 +42,7 @@ function displayOptions() {
 	});
 }
 
+// Displays all products and their info
 function viewProducts() {
 	connection.query('SELECT * FROM products', function(err,res) {
 		if (err) throw err;
@@ -52,6 +54,7 @@ function viewProducts() {
 	});
 }
 
+// Displays all products with a stock quantity of less than 5
 function viewInventory() {
 	connection.query('SELECT * FROM products', function(err,res) {
 		if (err) throw err;
@@ -65,6 +68,7 @@ function viewInventory() {
 	});
 }
 
+// Adds to stock quantity of existing products
 function addInventory() {
 	connection.query('SELECT * FROM products', function(err,res) {
 		if (err) throw err;
@@ -76,11 +80,11 @@ function addInventory() {
 			{	
 				name: 'id',
 				message: 'What is the id of the product you wish to add to?',
-				// 
+				// Prevent user from entering invalid id
 				validate: function(input) {
 					if (isNaN(input) == true) {
 						console.log('\nEnter a valid id');
-					} else if (input < 1 || input > res.length) {
+					} else if (input < 1 || input > res.length || isNaN(input) == true) {
 						console.log('\nEnter a valid id');
 					} else {return true;}
 				}
@@ -88,6 +92,7 @@ function addInventory() {
 			{
 				name: 'quantity',
 				message: 'How many units would you like to add?',
+				// Prevent user from entering invalid id
 				validate: function(input) {
 					if (isNaN(input) == true) {
 						console.log('\nEnter a number');
@@ -105,6 +110,7 @@ function addInventory() {
 	});
 }
 
+// Adds a new product to database
 function addProduct() {
 	inquirer.prompt([
 		{	
@@ -133,7 +139,8 @@ function addProduct() {
 		},
 		function(err) {
 			if (err) throw err;
-			console.log('New product has been added!');
+			console.log('New product has been added!\n' + '-------------------------');
+
 			displayOptions();
 		}
 		);
